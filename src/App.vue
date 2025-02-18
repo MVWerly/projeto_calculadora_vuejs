@@ -1,47 +1,85 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+  import { reactive } from 'vue';
+  import Tela from './components/Tela.vue';
+  import Formulario from './components/Formulario.vue';
+  import Historico from './components/Historico.vue';
+
+const estado = reactive({
+  valorUm: 0,
+  valorDois: 0,
+  operacao: '+',
+  resultado: 0,
+  historico: [],
+})
+
+const calcular = () => {
+  const { valorUm, valorDois, operacao } = estado;
+
+  switch (operacao) {
+    case '+':
+      estado.resultado = valorUm + valorDois;
+      break;
+    case '-':
+      estado.resultado = valorUm - valorDois;
+      break;
+    case '/':
+      estado.resultado = valorUm / valorDois;
+      break;
+    case '*':
+      estado.resultado = valorUm * valorDois;
+      break
+    default:
+      return estado.resultado = 0;
+  }
+
+  return estado.resultado
+}
+
+const limpar = () => {
+  estado.valorUm = 0;
+  estado.valorDois = 0;
+}
+
+const enviarHistorico = (e) => {
+  const novoHistorico = {
+    valorHistoricoUm: estado.valorUm,
+    valorHistoricoDois: estado.valorDois,
+    operacaoHistorico: estado.operacao,
+    resultadoHistorico: calcular(),
+    id: parseInt(Math.random() * 10000),
+  }
+
+  if (!isNaN(novoHistorico.resultadoHistorico)) {
+    estado.historico.push(novoHistorico);
+  } else {
+    alert('Não há dados')
+  }
+}
+
+const deleteHistorico = (e) => {
+  const { historico } = estado;
+
+  const button = e.target;
+  const idButton = Number(button.id);
+
+  const indice = historico.findIndex(obj => obj.id === idButton);
+
+
+  if (indice !== -1) {
+    historico.splice(indice, 1)
+  }
+}
+
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  <div class="container d-flex flex-column align-items-center">
+    <Tela :valor-um="estado.valorUm" :valor-dois="estado.valorDois" :operacao="estado.operacao" :calcular="calcular()"/>
+    <Formulario :enviar-historico="enviarHistorico" :limpar="limpar" :get-valor-um="evento => estado.valorUm = evento.target.value" :get-valor-dois="evento => estado.valorDois = evento.target.value" :get-operacao="evento => estado.operacao = evento.target.value"/>
+    <Historico :historico="estado.historico" :delete-historico="deleteHistorico" />
+  </div>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
-}
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
 </style>
