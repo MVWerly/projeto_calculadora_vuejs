@@ -38,6 +38,7 @@ const calcular = () => {
 const limpar = () => {
   estado.valorUm = 0;
   estado.valorDois = 0;
+  estado.operacao = "+";
 }
 
 const enviarHistorico = (e) => {
@@ -75,7 +76,7 @@ const deleteHistorico = (e) => {
 <template>
   <div class="container d-flex flex-column align-items-center">
     <Tela :valor-um="estado.valorUm" :valor-dois="estado.valorDois" :operacao="estado.operacao" :calcular="calcular()"/>
-    <Formulario :enviar-historico="enviarHistorico" :limpar="limpar" :get-valor-um="evento => estado.valorUm = evento.target.value" :get-valor-dois="evento => estado.valorDois = evento.target.value" :get-operacao="evento => estado.operacao = evento.target.value"/>
+    <Formulario :enviar-historico="enviarHistorico" :limpar="limpar" :get-valor-um="evento => estado.valorUm = Number(evento.target.value)" :get-valor-dois="evento => estado.valorDois = Number(evento.target.value)" :get-operacao="evento => estado.operacao = evento.target.value"/>
     <Historico :historico="estado.historico" :delete-historico="deleteHistorico" />
   </div>
 </template>
